@@ -1,0 +1,7 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.autom.kozaris.microcontrol.MainActivity">
+    <item
+        android:id="@+id/action_refresh"
+        android:title="@string/menu_main_refresh"/>
+</menu>

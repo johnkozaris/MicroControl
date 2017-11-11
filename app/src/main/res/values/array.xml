@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array
+        name="string_array_esp_html">
+        <item>Main Page</item>
+        <item>Options</item>
+        <item>WiFi Chooser</item>
+    </string-array>
+</resources>

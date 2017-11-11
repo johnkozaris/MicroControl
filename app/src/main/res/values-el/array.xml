@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array
+        name="string_array_esp_html">
+        <item>Κεντρική Σελίδα</item>
+        <item>Ρυθμίσεις</item>
+        <item>Επιλογή Δικτύου WiFi</item>
+    </string-array>
+</resources>

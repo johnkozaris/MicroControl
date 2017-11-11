@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">Mikro Control</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in_short">Sign In</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="title_activity_main" translatable="false">MainActivity</string>
+
+
+    <string name="menu_main_refresh">Refresh</string>
+
+    <!-- Strings for settings fab notification dialog -->
+    <string name="fab_sett_not_dialog_title">Notification</string>
+    <string name="fab_sett_not_dialog_message">This module will restart in settings mode.
+        Please connect to its access point, and navigate to address 192.168.1.4 through any browser in order to configure the module</string>
+    <string name="login_button_configure_local_module">Configure Local Module</string>
+    <string name="browser_image_add_new_values">New Values</string>
+    <string name="cardview_title_id">Microcontroller Χ</string>
+    <string name="cardview_title_id_prop" translatable="false">ID: %1$d</string>
+    <string name="cardview_status_title">Status:</string>
+    <string name="cardview_status_value">Unknown</string>
+    <string name="cardview_switch_text">Switch</string>
+    <string name="cardview_description_title">Description:</string>
+    <string name="cardview_description_value">Unknown</string>
+    <string name="cardview_indication_value">None</string>
+    <string name="cardview_indication_title">Data:</string>
+    <string name="cardview_button_control_text">Motor Control</string>
+    <string name="motordialog_title">Controlling Motor: %1$s</string>
+    <string name="motordialog_step_title">Step</string>
+    <string name="motordialog_step_right_image_desc">Step Right</string>
+    <string name="motordialog_step_left_image_descstep_left">Step Left</string>
+    <string name="title_activity_login2">Sign in</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>

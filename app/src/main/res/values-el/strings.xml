@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mikro Control</string>
+    <string name="action_sign_in_short">Σύνδεση</string>
+    <string name="browser_image_add_new_values">Νέες Τιμές</string>
+    <string name="cardview_button_control_text">Ελεγχος Κινητήρα</string>
+    <string name="cardview_description_title">Περιγραφή:</string>
+    <string name="cardview_description_value">Αγνωστη</string>
+    <string name="cardview_indication_title">Ενδειξη:</string>
+    <string name="cardview_indication_value">Καμία</string>
+    <string name="cardview_status_title">Κατάσταση:</string>
+    <string name="cardview_status_value">Αγνωστο</string>
+    <string name="cardview_switch_text">Διακόπτης</string>
+    <string name="cardview_title_id">Μικροελεγκτής Χ</string>
+    <string name="error_field_required">Απαραίτητο Πεδίο</string>
+    <string name="error_invalid_email">Ακυρη Διευθυνση Email</string>
+    <string name="error_invalid_password">Πολύ μικρός κωδικός</string>
+    <string name="fab_sett_not_dialog_message">Γινετε επανεκίνηση της Μικροσυσκευής σε κατάσταση Ρύθμισης</string>
+    <string name="fab_sett_not_dialog_title">Ειδοποίηση</string>
+    <string name="login_button_configure_local_module">Ρύθμιση Τοπικών Συσκευών</string>
+    <string name="menu_main_refresh">Ανανέωση</string>
+    <string name="motordialog_step_left_image_descstep_left">Βήμα Αριστερά</string>
+    <string name="motordialog_step_right_image_desc">Βήμα Δεξιά</string>
+    <string name="motordialog_step_title">Βήμα</string>
+    <string name="motordialog_title">Ελεγχος Κινητήρα %1$s</string>
+    <string name="prompt_email">Email η Ονομα Χρήστη</string>
+    <string name="permission_rationale">\"Χρειάζεται άδεια πρόσβασης στις Επαφές για να υπάρχει αυτόματη συμπλήρωση Email.\"</string>
+    <string name="prompt_password">Κωδικός</string>
+</resources>
