@@ -36,34 +36,23 @@ import static com.autom.kozaris.microcontrol.ConstantStrings.SETTINGS._ACTIVITY;
 public class MainActivity extends AppCompatActivity implements MqttClientServiceReceiver.BroadcastListener {
 
     MqttClientServiceReceiver mqttServiceReceiver;
+    //Καρτέλα Εξόδων
     OutputsFragment outputsfragment;
+    //Καρτέλα εισόδων
     InputsFragment inputsFragment;
-    //endregion
-
 
     //region Activity Basic Overrides (Start, Stop, Create ,Destroy)
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-       // ModuleListGeneral.add(new MicroModule(111,"input","No Description"));
-        //ModuleListGeneral.add(new MicroModule(112,"output","No Description",false));
-       // MicroModule mm1= new MicroModule(114,"output","No Description",true);
-      //  mm1.setData("350");
-       // ModuleListGeneral.add(mm1);
-      //  ModuleListGeneral.add(new MicroModule(113,"motor","No Description"));
         outputsfragment = new OutputsFragment();
         inputsFragment = new InputsFragment();
-
-
-        //region Toolbar and Tabs Initialization
+        //region Αρχικοποίηση Toolbar and Tabs
         Toolbar toolbar =findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        if (getSupportActionBar()!=null)
-        {
+        if (getSupportActionBar()!=null) {
             getSupportActionBar().setTitle("Mikro Control");
             getSupportActionBar().setIcon(R.mipmap.ic_mikro_cloud);
         }
@@ -73,18 +62,31 @@ public class MainActivity extends AppCompatActivity implements MqttClientService
         TabLayout tabLayout =findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
         //endregion
-        RegisterReceivers();
 
+        /*
+        Αρχικοποίηση του Broadcast Receiver που λαμβάνει γεγόνότα για την
+        δραστηριοτητα MainActivity.
+        */
+        RegisterReceivers();
+        /*
+        Αλλαγη της μεταβλητής ¨Querry_Active στις ρυθμίσεις προγράμματος,
+        η μεταβλητη σηματοδοτεί οτι η δραστηριότητα MainActivity
+        βρίσκετε σε λειτουργία.
+        */
         SharedPreferences sp = getSharedPreferences(_ACTIVITY, MODE_PRIVATE);
         SharedPreferences.Editor ed = sp.edit();
         ed.putBoolean(ConstantStrings.SETTINGS._QUERY_ACTIVE, true)
                 .apply();
-
-        //region Circle button Click Listener
+        //Αρχικοποιήση κουμπιού συγχρονισμού "fab"
         FloatingActionButton fab =findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /*
+                Οταν το κουμπί πατηθεί, τοτε θα σταλεί κατάλληλο μηνυμα στο θέμα συγχρονισμου¨μέσω του Service "MicroMqttService"
+                ωστε να διαβαστεί απο τους μικροελεγκτές και να τους ενημερώσει σε ποιο "androidID"
+                πρεπει να στείλουν τα στοιχεία τους
+                */
                 @SuppressLint("HardwareIds") String androidID = android.provider.Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
                 Intent synchronizeIntent = new Intent().setAction(ConstantStrings.ACTIONS._PUBLISH)
                                                         .putExtra(ConstantStrings.EXTRAS._PUB_TOPIC, IConstants.Topics.SYNCHRONIZE)
@@ -123,6 +125,9 @@ public class MainActivity extends AppCompatActivity implements MqttClientService
 
     @Override
     public void onBackPressed() {
+        /* Ειδοποίση με κατάλληλο μήνυμα οταν ο χρήστης προσπαθήσει να πατήσει το
+        πληκτρο "Πισω" στην συσκευη του, ωστε να γίνει έξοδος απο την δραστηριότητα MainActivity
+         */
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setTitle("Leaving Application");
         alertDialog.setMessage("You will be disconected");
@@ -147,13 +152,18 @@ public class MainActivity extends AppCompatActivity implements MqttClientService
 
     //endregion
 
+    /*
+        Αρχικοποίηση του Broadcast Receiver που λαμβάνει γεγόνότα για την
+        δραστηριοτητα MainActivity.
+    */
     private void RegisterReceivers() {
+        //Τα γεγονότα που ενδιαφέρουν την δραστηριότητα MainActivity ελεγχονται απο τον MqttClientServiceReceiver
+        // η εγγραφή στο φίλτρο _RECEIVED_MESSAGE θα μας δώσει μονο το γεγονός "Εισερχόμενο μήνυμα MQTT".
         registerReceiver(new MqttClientServiceReceiver(this), new IntentFilter(ConstantStrings.ACTIONS._RECEIVED_MESSAGE));
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -164,22 +174,31 @@ public class MainActivity extends AppCompatActivity implements MqttClientService
         return id == R.id.action_refresh || super.onOptionsItemSelected(item);
 
     }
-
     //region LISTENERS FOR MQTT EVENTS
 
+    /* Η μέθοδος onModuleCreateNew καλείτε οταν ενα εισερχόμενο μύνημα MQTT  στο Service "ΜicroMqttServie"
+    αναγνωριστεί ως μύνημα για την δημιουργία νέας συσκευής
+     */
     @Override
     public void onModuleCreateNew(MicroModule newModule) {
         switch (newModule.getModuleType()){
             case OUTPUT:
+                //Αν η συσκευή "newModule" είναι έξοδος, τοτε θα γίνει
+                // εγγραφή στα θέματα LastWil και Data της συσκευής
                 if(FindModulebyId(newModule.getModuleID(),outputsfragment.OutputModuleList)!=null){return;}
                 SubscribeBroadcast(newModule.getDataTopic());
                 SubscribeBroadcast(newModule.getWillTopic());
+                //Η συσκευή τοποθετείτε στην λίστα "OutputModuleList" για να διαβαστεί απο
+                //την καρτέλα εξόδων.
                 outputsfragment.OutputModuleList.add(newModule);
                 outputsfragment.recyclerAdapter.notifyDataSetChanged();
                 break;
             case INPUT:
                 if (FindModulebyId(newModule.getModuleID(),inputsFragment.InputModuleList)!=null){return;}
+                //Αν η συσκευή "newModule" είναι έξοδος, τοτε θα γίνει εγγραδή στο θέμα LastWill της συσκευής
                 SubscribeBroadcast(newModule.getWillTopic());
+                //Η συσκευή τοποθετείτε στην λίστα "inputModuleList" για να διαβαστεί απο
+                //την καρτέλα εισόδων.
                 inputsFragment.InputModuleList.add(newModule);
                 inputsFragment.recyclerAdapter.notifyDataSetChanged();
                 break;
@@ -187,7 +206,9 @@ public class MainActivity extends AppCompatActivity implements MqttClientService
         }
     }
 
-
+    /* Η μέθοδος SubscribeBroadcast δέχεται ενα θέμα σε μορφή String
+     και αναλαμβάνει να το προωθήσει μέσω ενός Intent  στο MicroMqttService
+     */
     private void SubscribeBroadcast(String Topic)
     {
         Intent subscribe= new Intent()
@@ -196,6 +217,9 @@ public class MainActivity extends AppCompatActivity implements MqttClientService
         sendBroadcast(subscribe);
     }
 
+    /* Η μέθοδος onModuleOutputData καλείτε οταν ενα εισερχόμενο μύνημα MQTT  στο Service "ΜicroMqttServie"
+   αναγνωριστεί ως μύνημα δεδομένων μιας υπάρχουσας συσκευής.
+    */
     @Override
     public void onModuleOutputData(int moduleId, String data) {
         for (MicroModule e : outputsfragment.OutputModuleList) {
@@ -206,7 +230,10 @@ public class MainActivity extends AppCompatActivity implements MqttClientService
         outputsfragment.recyclerAdapter.notifyDataSetChanged();
     }
 
-
+    /* Η μέθοδος onModuleDisconected καλείτε οταν ενα εισερχόμενο μύνημα MQTT  στο Service "ΜicroMqttServie"
+       αναγνωριστεί ως αποσύνδεσης μιας συσκευής απο τον μεσίτη.Αναλαμβάνει να διαγράψει τις συσκευές
+       απο την κατάλληλη λίστα InputModuleList η OutputModuleList
+        */
     @Override
     public void onModuleDisconected(int moduleId, String Type) {
         MicroModule deletedModule;
@@ -226,9 +253,11 @@ public class MainActivity extends AppCompatActivity implements MqttClientService
 
     }
 
-
-    public MicroModule FindModulebyId(int id, List<MicroModule> filteredlist) {
-        for (MicroModule e : filteredlist) {
+    /* Η μέθοδος FindModulebyId δέχετε ενα αναγνωριστικό συσκυεής "id" και μία λίστα
+     συσκευών "list" και αναλαμβάνει την εύρεση της συγκεκριμένης συσκευής απο την λίστα
+       */
+    public MicroModule FindModulebyId(int id, List<MicroModule> list) {
+        for (MicroModule e : list) {
             if (e.getModuleID() == id) {
                 return e;
             }
