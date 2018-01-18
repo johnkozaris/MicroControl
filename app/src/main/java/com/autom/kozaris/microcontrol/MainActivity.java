@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements MqttClientService
         */
         RegisterReceivers();
         /*
-        Αλλαγη της μεταβλητής ¨Querry_Active στις ρυθμίσεις προγράμματος,
+        Αλλαγη της μεταβλητής ¨Query_Active στις ρυθμίσεις προγράμματος,
         η μεταβλητη σηματοδοτεί οτι η δραστηριότητα MainActivity
         βρίσκετε σε λειτουργία.
         */
@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements MqttClientService
 
     @Override
     public void onBackPressed() {
-        /* Ειδοποίση με κατάλληλο μήνυμα οταν ο χρήστης προσπαθήσει να πατήσει το
+        /* Ειδοποίησε με κατάλληλο μήνυμα οταν ο χρήστης προσπαθήσει να πατήσει το
         πληκτρο "Πισω" στην συσκευη του, ωστε να γίνει έξοδος απο την δραστηριότητα MainActivity
          */
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
@@ -303,7 +303,6 @@ public class MainActivity extends AppCompatActivity implements MqttClientService
         public int getItemPosition(Object object) {
             return POSITION_NONE;
         }
-
     }
 }
 

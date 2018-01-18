@@ -1,4 +1,5 @@
 package com.autom.kozaris.microcontrol.Fragments;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -23,6 +24,9 @@ public class MotorController extends DialogFragment{
             MotorID = args.getString(ID_FOR_CONTROLL);
         }
     }
+
+
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -52,6 +56,7 @@ public class MotorController extends DialogFragment{
                     return false;
                 }
             });
+
             ArrowLeft.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {

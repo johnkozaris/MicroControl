@@ -1,10 +1,22 @@
 package com.autom.kozaris.microcontrol;
 
+/**
+ * MicroModule
+ *
+ * Αναππαριστά μια συσκευή που είναι συνδεδεμένη στον μεσίτη MQTT
+ *
+ * Αρχικοποίηση μέσω: {@link #MicroModule(int, String, String, String)}
+ * @author Ioannis Kozaris
+ */
 public class MicroModule {
     //region PROPERTIES
+
+    /**
+     * To Interface {@link IConstants} χρησημοποιέιται για την αποθήκευση
+     * σταθερών String.
+     */
     public interface IConstants {
          interface Payloads {
-            String COMMAND_RESET_MCU = "reset&mcu";
             String COMMAND_RESET_ROM = "reset&rom";
         }
 
@@ -27,21 +39,36 @@ public class MicroModule {
             String DIGITAL_DISPLAY = "digital";
         }
     }
-    private final String Name;
+
+    /**
+     * @return Ονομα Συσκευής ως String
+     */
     public String getName() {
         return Name;
     }
+    private final String Name;
 
-    private final int moduleID;
+    /**
+     * Το αναγνωρηστικό @moduleID εξασφαλίζει την μοναδικότητα κάθε συσκευής
+     * @return Αναγνωρηστικό Συσκευής ως int
+     */
     int getModuleID() {
         return moduleID;
     }
+    private final int moduleID;
 
+    /**
+     * Enum moduleType αναπαριστά το είδος ελέγχου των συσκευών
+     * Μια συσκευή είναι είτε ΕΙΣΟΔΟΣ είτε ΕΞΟΔΟΣ
+     * @return Είδος ελεγχου ως INPUT ή OUTPUT
+     */
+    Type getModuleType() {
+        return moduleType;
+    }
+    private final  Type moduleType;
     public enum Type{
-
         INPUT,
         OUTPUT;
-
         @Override
         public String toString() {
             switch (this)
@@ -53,11 +80,18 @@ public class MicroModule {
         }
     }
 
-    private final  Type moduleType;
-    public Type getModuleType() {
-        return moduleType;
+    /**
+     * Enum ControlType αναπαριστά τον τρόπο ελεγχου των συσκευών.
+     * Ο τρόπος ελέγχου εξαρτάται απο τα ηλεκτρονικά χαρακτηρηστικα
+     * της συσκευής, αν ειναι διακόπτης,αναλογικός αισθητήρας, κτλπ.
+     * Η μεταβλητή αυτή εκφράζει τον τρόπο που θα αναπαρασταθούν
+     * τα εργαλεία ελεγχου της συσκευής
+     * @return Τρόπος Ελεγχου ως SWITCH,LCD_TEXT,ANALOG,DIGITAL,MOTOR_CONTROL
+     */
+    ControlType getControlType() {
+        return moduleControl;
     }
-
+    private final ControlType moduleControl;
     public enum ControlType{
         SWITCH,
         LCD_TEXT,
@@ -66,12 +100,11 @@ public class MicroModule {
         MOTOR_CONRTOL
     }
 
-    private final ControlType moduleControl;
-    ControlType getControlType() {
-        return moduleControl;
-    }
-
-
+    /** Αν η συσκευή είναι διακόπτης , η μεταβλητη switchActive
+     * κρατάει την κατάσταση του διακόπτη
+     * True= Κλειστός
+     * False=Ανοιχτός
+     */
     private boolean switchActive;
     boolean isSwitchActive() {
         return switchActive;
@@ -80,6 +113,9 @@ public class MicroModule {
         this.switchActive = switchActive;
     }
 
+    /** Αν η συσκευή είναι οποιαδήποτε Εξοδος , η μεταβλητη Data
+     * κρατάει τα δεδομένα της συσκευής εξόδου
+     */
     private String Data;
     public String getData() {
         return Data;
@@ -90,6 +126,13 @@ public class MicroModule {
     //endregion
 
 
+    /**
+     * Αρχικοποίηση μιας συσκευής.
+     * @param stmoduleID Μοναδικό αναγνωρηστικό συσκευής
+     * @param stmoduleType Τύπος συσκευής Είσοδος η έξοδος (INPUT,OUTPUT)
+     * @param controlType Τρόπος Ελεγχου Συσκευής {@link #getControlType()}
+     * @param stmoduleName Ονομα συσκευής
+     */
     public MicroModule(int stmoduleID, String stmoduleType,String controlType, String stmoduleName ) {
         this.moduleID = stmoduleID;
         this.moduleType = ParseStrToType(stmoduleType);
@@ -97,6 +140,8 @@ public class MicroModule {
         this.Name=stmoduleName;
     }
 
+    // Οι παρακάτω μέθοδοι είναι βοηθητικοι και χρησιμοποιούντε για την μετατροπή
+    //Strings σε Enums που χρησιμοποιούντε απο την κλάση MicroModule
     private Type ParseStrToType(String stype){
         switch (stype)
         {
@@ -116,14 +161,21 @@ public class MicroModule {
         }
     }
 
+    /**
+     * @return Επιστρέφει το Θέμα ρυθμίσεων (SettingsTopic) της συσκευής
+     */
     String getSettingsTopic(){
         return ("/"+this.moduleType.toString()+"/"+this.moduleID+"/settings");
     }
-
+    /**
+     * @return Επιστρέφει το Θέμα δεδομένων (DataTopic) της συσκευής
+     */
     String getDataTopic(){
         return ("/"+this.moduleType.toString()+"/"+this.moduleID+"/data");
     }
-
+    /**
+     * @return Επιστρέφει το Θέμα LastWill της συσκευής
+     */
     String getWillTopic(){
         return ("/"+this.moduleType.toString()+"/"+this.moduleID+"/lastwill");
     }

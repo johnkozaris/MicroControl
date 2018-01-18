@@ -1,5 +1,10 @@
 package com.autom.kozaris.microcontrol;
 
+/**
+ * Interface {@link ConstantStrings}
+ *
+ * Περιέχει σταθερές που χρησιμοποιούνται ανάμεσα στις διαφορετικές κλάσεις του προγράμματος
+ */
 public interface ConstantStrings {
     interface STORAGE{
         String STORAGE_KEY_CON_SETTINGS_PREF="my_conn_setting_mqtt_br";
@@ -9,8 +14,6 @@ public interface ConstantStrings {
         String PREFERENCE_BROKER_CLEANSESSION="pref_br_cleanses";
     }
     interface SETTINGS{
-
-        //SHARED PREFERENCES and SETTINGS
         String _ACTIVITY ="com.autom.kozaris.microcontrol.MICROCONTROLACTINFO";
         String _QUERY_ACTIVE ="com.autom.kozaris.microcontrol.ACTACTIVE";
         String _BOOL_SERVICE_RUNNING ="com.autom.kozaris.microcontrol.SRVRNBL";
@@ -26,16 +29,12 @@ public interface ConstantStrings {
         String _STATUS_INFO ="com.autom.kozaris.microcontrol.SERV_EXT_INF";
     }
     interface ACTIONS{
-
-        //Intent ACTION strings FOR PubSubReceiver
         String _SERVICE_TERMINATE ="com.autom.kozaris.microcontrol.TERMMQTTSERV";
         String _PING="com.autom.kozaris.microcontrol.PING_BRK_ACT";
         String _PUBLISH="com.autom.kozaris.microcontrol.MSG_ACT_SEND";
         String _SUBSCRIBE="com.autom.kozaris.microcontrol.SUB_ACT_MAKE";
-        //Intent ACTION and EXTRAS FOR ServiceReceiver
         String _RECEIVED_MESSAGE ="com.autom.kozaris.microcontrol.MSG_REC_ACT";
         String _RECEIVED_REPEAT ="com.autom.kozaris.microcontrol.MSG_REP_REC_ACT";
-        //Information strings
         String _SERVICE_SEND_STATUS ="com.autom.kozaris.microcontrol.SERV_STATUS";
     }
 }

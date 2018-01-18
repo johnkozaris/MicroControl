@@ -16,16 +16,27 @@ import com.autom.kozaris.microcontrol.R;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * {@link Fragment} InputsFragment
+ *
+ * Καρτέλα που περιέχει τις συσκευές που είναι δηλωμένες ως Είσοδοι
+ * Καλέιτε μόνο απο την δραστηριότητα MainActivity
+ *
+ *@author   Ioannis Kozaris
+ */
 public class InputsFragment extends Fragment{
     public List<MicroModule> InputModuleList;
     public ModulesAdapter recyclerAdapter;
     ViewGroup mcontainer;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Αν καλέστηκε απο την δραστηριότητα MainActivity
         if (getActivity() instanceof MainActivity)
         {
+            //Τοτε δημιούργησε μια δημόσια λίστα InputModuleList στην οποία θα καταχωρούνται οι
+            // συσκευές εισόδου απο την δραστηριότητα MainActivity.
             InputModuleList=new ArrayList<>();
              recyclerAdapter = new ModulesAdapter(getActivity(), InputModuleList);
         }
@@ -49,15 +60,7 @@ public class InputsFragment extends Fragment{
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-
-        //  throw new RuntimeException(context.toString()
-        //         + " must implement OnFragmentInteractionListener");
-
-    }
-
+    public void onAttach(Context context) {super.onAttach(context);}
     @Override
     public void onDetach() {
         super.onDetach();

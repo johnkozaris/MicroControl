@@ -16,12 +16,16 @@ import com.autom.kozaris.microcontrol.ConstantStrings;
 import com.autom.kozaris.microcontrol.R;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
+ * {@link Fragment} ConnectionDetailsFragment
+ *
+ * Δινει στον χρήστη την δυνατότητα να καταχωρήσει τις παραμέτρους
+ * του μεσίτη στον οποίο θα γίνει η σύνδεση
+ *
+ * Activities που περιέχουν αυτο το Fragment πρέπει να υλοποιούν
  * {@link OnSettingsCompletedListener} interface
- * to handle interaction events.
- * Use the {@link ConnectionDetailsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * για να διαχειριζονται τα γεγονότα.
+ *
+ *@author   Ioannis Kozaris
  */
 public class ConnectionDetailsFragment extends DialogFragment {
 
@@ -33,6 +37,7 @@ public class ConnectionDetailsFragment extends DialogFragment {
     public static ConnectionDetailsFragment newInstance() {
         return new ConnectionDetailsFragment();
     }
+    //Αρχικοποίηση μεταβλητών για αποφυγή
     String defAddress="";
     String defUsername="";
     String defPassword="";
@@ -54,7 +59,6 @@ public class ConnectionDetailsFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view =inflater.inflate(R.layout.fragment_connection_details, container, false);
         CheckPreferencesForData();
         Address=defAddress;
@@ -85,6 +89,9 @@ public class ConnectionDetailsFragment extends DialogFragment {
         return view;
     }
 
+    /**
+     * Ελεγχος Null και κανονικοποίηση παραμέτρων MQTT
+     */
     private void PassSettings() {
         if (brokerAddress.getText()==null ||brokerAddress.getText().toString().isEmpty()){
             brokerAddress.setError("Field required");
@@ -95,6 +102,8 @@ public class ConnectionDetailsFragment extends DialogFragment {
         }else {
             Address="tcp://"+brokerAddress.getText().toString()+":1883";
         }
+        //Αν ο χρήστης θέλει το πρόγραμμα να θυμάται τις παραμέτρους
+        //αποθήκευσε τις παραμέτρους στις ρυθμίσεις προγράμματος
         if (checkbocRemeber.isChecked()){
             defAddress=Address;
             defUsername=brokerUsername.getText().toString();
@@ -102,11 +111,16 @@ public class ConnectionDetailsFragment extends DialogFragment {
             defCleanSession=checkboxCleanSession.isChecked();
             SavePreferences();
         }
+        //Ειδοποίησηε τον OnSettingsCompletedListener οτι η καταχώρηση παραμέτρων ολοκληρώθηκε.
         mListener.onSettingsCompleted(Address);
-        //// TODO: 26/10/2017  wire others user pass..
         dismiss();
     }
 
+    /**
+     * Φορτώνει τις παραμέτρους απο τις ρυθμίσεις προγράμματος
+     * Αν δεν υπαρχουν αποθηκευμένες παράμετροι τότε φορτώνει κενά string
+     * για αποφυγή NullReferenceExeption
+     */
     void CheckPreferencesForData(){
         SharedPreferences Pref = getActivity().getSharedPreferences(ConstantStrings.STORAGE.STORAGE_KEY_CON_SETTINGS_PREF,Context.MODE_PRIVATE);
         defAddress = Pref.getString(ConstantStrings.STORAGE.PREFERENCE_BROKER_ADDR,"");
@@ -115,6 +129,9 @@ public class ConnectionDetailsFragment extends DialogFragment {
         defCleanSession = Pref.getBoolean(ConstantStrings.STORAGE.PREFERENCE_BROKER_CLEANSESSION,true);
     }
 
+    /**
+     * Αποθήκευση των παραμέτρων στις ρυθμίσεις προγράμματος
+     */
     void SavePreferences(){
         SharedPreferences sharedPref = getActivity().getSharedPreferences(ConstantStrings.STORAGE.STORAGE_KEY_CON_SETTINGS_PREF,Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();

@@ -28,13 +28,15 @@ import com.autom.kozaris.microcontrol.R;
 
 import java.util.ArrayList;
 import java.util.List;
-
-
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
+ * {@link Fragment} WifiListFragment
+ *
+ * Διάλογος που προβάλει τα κοντινα δίκτυα Wi-Fi των μικροελεγκτών ESP
+ * που είναι διαθέσιμα.
+ *
+ * Activities που περιέχουν αυτο το Fragment πρέπει να υλοποιούν
  * {@link OnWifiSelectedListener} interface
- * to handle interaction events.
+ * για να διαχειριζονται τα γεγονότα.
  */
 public class WifiListFragment extends DialogFragment {
 
@@ -48,27 +50,29 @@ public class WifiListFragment extends DialogFragment {
     ArrayAdapter<String> arrayAdapter;
     ProgressBar scanBar;
 
-    public static WifiListFragment newInstance() {
-        return new WifiListFragment();
-    }
-    public WifiListFragment() {
-        // Required empty public constructor
-    }
+    public static WifiListFragment newInstance() { return new WifiListFragment();}
+    public WifiListFragment() {}
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         arrayList= new ArrayList<>();
+        //Αρχικοποίηση της υπηρεσίας WiFi της συσκευής
         wifiReceiver = new WifiScanReceiver();
         wifi = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        //Καταχώρηση φίλτρου για να λειφθούν απο τον BroadcastReceiver WifiScanReceiver τα διαθέσιμα δικτυα WiFi
         getActivity().registerReceiver(wifiReceiver,new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 
     }
 
+    /**
+     * Αποτέλεσμα της αιτηση άδειας απο τον χρήστη για να χρησιμοποιηθεί το WiFi της συσκευής
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            //Αν δωθεί άδεια χρήσης του wifi τότε να ξεκίνήσει η αναζήτηση δικτύων
             showProgress(true);
             wifi.startScan();
         }
@@ -90,15 +94,16 @@ public class WifiListFragment extends DialogFragment {
                 dismiss();
             }
         });
-
+        //Ενεργοποίηση το WiFi αν δεν είναι ενεργό
         if (!wifi.isWifiEnabled()){
             wifi.setWifiEnabled(true);
         }
-
+        //Για καινούργια λογισμικά android κάνε αίτηση μιας άδειας απο τον χρήστη, για την χρήση του wifi
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && getActivity().checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                     PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION);
         }else{
+            //Εναρξη αναζήτησης δικτύων
             showProgress(true);
             wifi.startScan();
         }
@@ -123,18 +128,17 @@ public class WifiListFragment extends DialogFragment {
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * Πρεπει να υλοποιείτε απο τις δραστηριότητες που χρησιμοποιουν το WifiListFragment
+     * ωστε να λαμβάνουν το επιλεγμένο ssid.
      */
     public interface OnWifiSelectedListener {
         void onWifiSelected(String ssid);
     }
+
+    /**
+     * Εφέ αναζήτηση δικτύου
+     * @param show εντολη ενεργοποίησης απενεργοποίησης εφε
+     */
     private void showProgress(final boolean show) {
 
 
@@ -159,26 +163,25 @@ public class WifiListFragment extends DialogFragment {
 
     }
 
+    /**
+     * Λαμβάνει τα δίκτυα   Wifi που βρέθηκαν απο την αναζήτηση
+     */
     private class WifiScanReceiver extends BroadcastReceiver {
-
 
         public void onReceive(Context c, Intent intent) {
             List<ScanResult> wifiScanList = wifi.getScanResults();
             wifis = new String[wifiScanList.size()];
             arrayList.clear();
             arrayAdapter.clear();
-
+            //Βάλε στην λίστα μόνο τα δίκτυα Wifi που περιέχουν την λέξη esp
             for (int i = 0; i < wifiScanList.size()-1; i++) {
                 wifis[i] = wifiScanList.get(i).SSID;
                 if (wifiScanList.get(i).SSID.contains("ESP")||wifiScanList.get(i).SSID.contains("esp")||wifiScanList.get(i).SSID.contains("Esp")) {
                     arrayAdapter.add(wifis[i]);
                 }
-
             }
             showProgress(false);
-            //TODO CHANGE succes? ssd selection
             arrayAdapter.notifyDataSetChanged();
-
         }
     }
 }

@@ -42,12 +42,9 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesViewHolder> {
         ConfigureFab(holder,mmd);
         if (mmd.getName() != null) {
             holder.vName.setText(mmd.getName());
-            //   holder.vStatus.setLcdText("Συνδεδεμενο");
-            //  holder.vStatus.setTextColor(Color.GREEN);
-        } else {
+        }
+        else {
             holder.vName.setText("Αγνωστο");
-            //  holder.vStatus.setLcdText("Συνδεδεμενο");
-            //   holder.vStatus.setTextColor(Color.GREEN);
         }
 
         switch (mmd.getControlType()) {
