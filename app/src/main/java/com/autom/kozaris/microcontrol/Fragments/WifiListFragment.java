@@ -60,7 +60,7 @@ public class WifiListFragment extends DialogFragment {
         //Αρχικοποίηση της υπηρεσίας WiFi της συσκευής
         wifiReceiver = new WifiScanReceiver();
         wifi = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        //Καταχώρηση φίλτρου για να λειφθούν απο τον BroadcastReceiver WifiScanReceiver τα διαθέσιμα δικτυα WiFi
+        //Καταχώρηση φίλτρου για να λειφθούν απο την κλάση WifiScanReceiver τα διαθέσιμα δικτυα WiFi
         getActivity().registerReceiver(wifiReceiver,new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 
     }
@@ -164,7 +164,7 @@ public class WifiListFragment extends DialogFragment {
     }
 
     /**
-     * Λαμβάνει τα δίκτυα   Wifi που βρέθηκαν απο την αναζήτηση
+     * Λαμβάνει τα δίκτυα  Wifi που βρέθηκαν απο την αναζήτηση
      */
     private class WifiScanReceiver extends BroadcastReceiver {
 

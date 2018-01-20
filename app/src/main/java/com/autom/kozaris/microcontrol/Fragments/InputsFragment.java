@@ -36,7 +36,7 @@ public class InputsFragment extends Fragment{
         if (getActivity() instanceof MainActivity)
         {
             //Τοτε δημιούργησε μια δημόσια λίστα InputModuleList στην οποία θα καταχωρούνται οι
-            // συσκευές εισόδου απο την δραστηριότητα MainActivity.
+            //συσκευές εισόδου απο την δραστηριότητα MainActivity.
             InputModuleList=new ArrayList<>();
              recyclerAdapter = new ModulesAdapter(getActivity(), InputModuleList);
         }
@@ -52,6 +52,7 @@ public class InputsFragment extends Fragment{
         recyclelist.setHasFixedSize(true);
         LinearLayoutManager llmanager = new LinearLayoutManager(getActivity());
         llmanager.setOrientation(LinearLayoutManager.VERTICAL);
+        //Σύνδεσε το UI σττοιχειο της λίστας με τον ModulesAdapter
         recyclelist.setAdapter(recyclerAdapter);
         recyclelist.setLayoutManager(llmanager);
         recyclerAdapter.notifyDataSetChanged();

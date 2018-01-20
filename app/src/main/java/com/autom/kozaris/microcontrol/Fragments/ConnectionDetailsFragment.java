@@ -37,7 +37,7 @@ public class ConnectionDetailsFragment extends DialogFragment {
     public static ConnectionDetailsFragment newInstance() {
         return new ConnectionDetailsFragment();
     }
-    //Αρχικοποίηση μεταβλητών για αποφυγή
+    //Αρχικοποίηση μεταβλητών για αποφυγή Null Reference Exception
     String defAddress="";
     String defUsername="";
     String defPassword="";
@@ -60,6 +60,7 @@ public class ConnectionDetailsFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view =inflater.inflate(R.layout.fragment_connection_details, container, false);
+        //Ελεγχος για αποθηκευμένες μεταβλητές απο προηγούμενη καταχώρηση
         CheckPreferencesForData();
         Address=defAddress;
         Address=Address.replace(":1883","");
@@ -102,7 +103,7 @@ public class ConnectionDetailsFragment extends DialogFragment {
         }else {
             Address="tcp://"+brokerAddress.getText().toString()+":1883";
         }
-        //Αν ο χρήστης θέλει το πρόγραμμα να θυμάται τις παραμέτρους
+        //Αν ο χρήστης θέλει το πρόγραμμα να θυμάται τις παραμέτρους,
         //αποθήκευσε τις παραμέτρους στις ρυθμίσεις προγράμματος
         if (checkbocRemeber.isChecked()){
             defAddress=Address;
@@ -160,8 +161,12 @@ public class ConnectionDetailsFragment extends DialogFragment {
     }
 
 
-
+    /**
+     * Χρησημοποιείται για αποστολή δεδομένων πίσω στην δραστηριότητα LoginActivity
+     * όταν ολοκληρωθεί η καταχώρηση των στοιχείων απο τον χρήστη
+     */
     public interface OnSettingsCompletedListener {
+        //Η δραστηριότητα LoginActivity κάνει Override την μέθοδο OnSettingsCompleted
         void onSettingsCompleted(String BrokerAddress);
     }
 }

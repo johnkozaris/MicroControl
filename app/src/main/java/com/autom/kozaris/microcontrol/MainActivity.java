@@ -36,9 +36,9 @@ import static com.autom.kozaris.microcontrol.ConstantStrings.SETTINGS._ACTIVITY;
 public class MainActivity extends AppCompatActivity implements MqttClientServiceReceiver.BroadcastListener {
 
     MqttClientServiceReceiver mqttServiceReceiver;
-    //Καρτέλα Εξόδων
+    //Καρτέλα που περιέχει την λίστα Εξόδων
     OutputsFragment outputsfragment;
-    //Καρτέλα εισόδων
+    //Καρτέλα που περιέχει την λίστα Εισόδων
     InputsFragment inputsFragment;
 
     //region Activity Basic Overrides (Start, Stop, Create ,Destroy)

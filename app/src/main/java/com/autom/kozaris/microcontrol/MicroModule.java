@@ -3,7 +3,7 @@ package com.autom.kozaris.microcontrol;
 /**
  * MicroModule
  *
- * Αναππαριστά μια συσκευή που είναι συνδεδεμένη στον μεσίτη MQTT
+ * Η κλάση Αναππαριστά μια συσκευή που είναι συνδεδεμένη στον μεσίτη MQTT
  *
  * Αρχικοποίηση μέσω: {@link #MicroModule(int, String, String, String)}
  * @author Ioannis Kozaris
@@ -17,20 +17,21 @@ public class MicroModule {
      */
     public interface IConstants {
          interface Payloads {
+             //Εντολή επανεκίνησης συσκευής
             String COMMAND_RESET_ROM = "reset&rom";
         }
-
+        //Αναφορές σε θέματα του συστήματος
          interface Topics {
              String _LASTWIL="lastwill";
              String _DATA = "data";
              String SYNCHRONIZE="/android/synchronize";
         }
-
+        //Τύποι συσκευών
          interface ModuleTypes {
             String INPUT = "input";
             String OUTPUT = "output";
         }
-
+        //Μέθοδοι ελέγχου συσκευών
          interface ControlTypes {
             String SWITCH = "switch";
             String ANALOG_DISPLAY = "analog";
@@ -140,8 +141,10 @@ public class MicroModule {
         this.Name=stmoduleName;
     }
 
-    // Οι παρακάτω μέθοδοι είναι βοηθητικοι και χρησιμοποιούντε για την μετατροπή
-    //Strings σε Enums που χρησιμοποιούντε απο την κλάση MicroModule
+    /**
+     * Η παρακάτω μέθοδοι είναι βοηθητικοι και χρησιμοποιούντε για την μετατροπή
+     *Strings σε Enums που χρησιμοποιούντε απο την κλάση MicroModule
+      */
     private Type ParseStrToType(String stype){
         switch (stype)
         {
