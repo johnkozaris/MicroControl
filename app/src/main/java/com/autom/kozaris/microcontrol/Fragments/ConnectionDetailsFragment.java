@@ -24,7 +24,6 @@ import com.autom.kozaris.microcontrol.R;
  * Activities που περιέχουν αυτο το Fragment πρέπει να υλοποιούν
  * {@link OnSettingsCompletedListener} interface
  * για να διαχειριζονται τα γεγονότα.
- *
  *@author   Ioannis Kozaris
  */
 public class ConnectionDetailsFragment extends DialogFragment {
@@ -136,6 +135,7 @@ public class ConnectionDetailsFragment extends DialogFragment {
     void SavePreferences(){
         SharedPreferences sharedPref = getActivity().getSharedPreferences(ConstantStrings.STORAGE.STORAGE_KEY_CON_SETTINGS_PREF,Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
+        //Οι κενες παράμετροι σύνδεσης δέν αποθηκευονται
         if (!Address.isEmpty()){ editor.putString(ConstantStrings.STORAGE.PREFERENCE_BROKER_ADDR,defAddress);}
         if (!defUsername.isEmpty()){ editor.putString(ConstantStrings.STORAGE.PREFERENCE_BROKER_USERNAME,defUsername);}
         if (!defPassword.isEmpty()){editor.putString(ConstantStrings.STORAGE.PREFERENCE_BROKER_PASSWORD,defPassword);}

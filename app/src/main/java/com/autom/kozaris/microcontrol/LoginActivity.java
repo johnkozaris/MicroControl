@@ -23,15 +23,24 @@ import com.autom.kozaris.microcontrol.Receivers.ConnectionStatusReceiver;
 
 import static com.autom.kozaris.microcontrol.ConstantStrings.SETTINGS._ACTIVITY;
 
-
+/**
+ * Login Activity
+ *
+ * Η πρώτη Δραστηριότητα της εφαρμογής.Παρουσιάζει το λογότυπο και δίνει 2 επιλογές στον χρήστη.
+ * 1.Συνδεση σε εναν μεσίτη και έναρξη της υπηρεσίας {@link MicroMqttService}
+ * 2. Αναζήτηση ενος Esp8266 WiFi Access Point
+ */
 public class LoginActivity extends AppCompatActivity implements ConnectionStatusReceiver.MqttConnectionListener,ConnectionDetailsFragment.OnSettingsCompletedListener {
 
-
-    // UI references.
     private ProgressBar mProgressView;
     private View mLoginFormView;
     ConnectionStatusReceiver mConnectionReceiver;
 
+    /**
+     * H μέθοδος αυτή καλείτε απο το {@link ConnectionDetailsFragment} οταν  συμπληρωθεί επιτυχώς
+     * η φόρμα με τα στοιχεία του μεσίτη. Εδω γίνεται έναρξη της υπηρεσιας {@link MicroMqttService}
+     * @param brokerAddress Η διευθυνση του μεσίτη στον οποιο θα γίνει σύνεση
+     */
     @Override
     public void onSettingsCompleted(String brokerAddress) {
         if (brokerAddress!=null && !brokerAddress.isEmpty()){
@@ -39,6 +48,7 @@ public class LoginActivity extends AppCompatActivity implements ConnectionStatus
         }else {
             Toast.makeText(this,"Connecting to: Default Address",Toast.LENGTH_SHORT).show();
         }
+        //Η υπηρεσία ξεκινάει σε ένα καινούργιο thread για να μήν παγώσει το UI και εξαρτάται απο το ApplicationContext
         new Thread() {
             public void run() {
                 startService(new Intent(getApplicationContext(),MicroMqttService.class));
@@ -47,14 +57,23 @@ public class LoginActivity extends AppCompatActivity implements ConnectionStatus
         }.start();
     }
 
+    /**
+     * H μέθοδος αυτή καλέιτε απο την κλάση {@link ConnectionStatusReceiver} οταν η υπηρεσια
+     * MicroMqttService την ειδοποιήσει οτι η σύνδεση στον μεσίτη είναι επιτυχής.
+     * Σε αυτήν την μέθοδο γίνεται η έναρξη της κεντρικής δραστηριότητας ελεγχου
+     * μικροελεγκτών {@link MainActivity}
+     */
     @Override
     public void onConnectSuccess() {
-        Intent mainactIntent = new Intent(this,MainActivity.class);
-        startActivity(mainactIntent);
+        //Εναρξη δραστηριότητας MainActivity
+        startActivity(new Intent(this,MainActivity.class));
         Toast.makeText(this,"Connected to Broker",Toast.LENGTH_LONG).show();
         showProgress(false);
     }
-
+    /**
+     * H μέθοδος αυτή καλέιτε απο την κλάση {@link ConnectionStatusReceiver} οταν η υπηρεσια
+     * MicroMqttService την ειδοποιήσει οτι η σύνδεση στον μεσίτη απέτυχε.
+     */
     @Override
     public void onConnectFail() {
         stopService(new Intent(getApplicationContext(),MicroMqttService.class));
@@ -67,29 +86,29 @@ public class LoginActivity extends AppCompatActivity implements ConnectionStatus
         super.onStart();
     }
 
+    /**
+     * H πρώτη μέθοδος η οποία θα καλεστεί κατα το άνοιγμα της εφαρμογής
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        // Η εφαρμογή δουλέυει μονο σε προσανατολισμο πορτρέτου
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
         mProgressView=findViewById(R.id.login_progress);
         mLoginFormView=findViewById(R.id.login_form);
         Button ButtonConnect =findViewById(R.id.email_sign_in_button);
         RegisterReceivers();
-
         Button configureButton =findViewById(R.id.button_Setup_Esp);
-        SharedPreferences initialValues = getSharedPreferences(MicroMqttService._APPLICATION_ID, 0);
-        SharedPreferences.Editor initEdit = initialValues.edit();
-        initEdit.putString("broker","127.0.0.1");
-        initEdit.putString("topic","/login");
+        // Αποθηκευται στην μνημη ρυθμισεων η κατάσταση της δραστηριοτητας (Δραστηριοτητα εκτελείται)
         SharedPreferences sp = getSharedPreferences(ConstantStrings.SETTINGS._ACTIVITY, MODE_PRIVATE);
         SharedPreferences.Editor ed = sp.edit();
         ed.putBoolean(ConstantStrings.SETTINGS._QUERY_ACTIVE, false);
-        initEdit.apply();
         ed.apply();
-
+        //Οταν πατηθέι το πλήκτρο σύνδεσης τερματίζετε η υπήρεσία MicroMqttService αν τρέχει και στην
+        //συνέχει εκτελείτε το παράθυρο διαλόγου settingsFragment για να γίνει καταχώρηση των
+        //παραμέτρων σύνδεσης του μεσίτη.
         ButtonConnect.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -99,6 +118,8 @@ public class LoginActivity extends AppCompatActivity implements ConnectionStatus
                 }
 
         });
+        //Οταν πατηθεί το πλήκτρο ρυθμιση συσκευών θα ξεκινήσει η δραστηριότητα EspSetupActivity
+        // που σκοπο εχει την ρυθμιση των συσκευων Esp που βρίσκονται εντος εμβέλειας WiFi
         configureButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,12 +134,13 @@ public class LoginActivity extends AppCompatActivity implements ConnectionStatus
         if (hasFocus)
         {
             NotificationManager nm =(NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+            assert nm != null;
             nm.cancel(2);
         }
     }
 
     /**
-     * Shows the progress UI and hides the login form.
+     * Εμφανίζει το εφέ φόρτωσης.
      */
     private void showProgress(final boolean show) {
 
@@ -154,12 +176,15 @@ public class LoginActivity extends AppCompatActivity implements ConnectionStatus
         unregisterReceiver(mConnectionReceiver);
     }
 
+    /**
+     * Εγγραφή στις ενέργειες του Broadcast Receiver {@link ConnectionStatusReceiver}
+     * για να λειτουργησει η μέθοδος Callback {nConnectSuccess} και onConnectFail
+     */
     private void RegisterReceivers() {
         SharedPreferences sp = getSharedPreferences(_ACTIVITY, MODE_PRIVATE);
         SharedPreferences.Editor ed = sp.edit();
         ed.putBoolean(ConstantStrings.SETTINGS._QUERY_ACTIVE, true);
         ed.apply();
-
         mConnectionReceiver = new ConnectionStatusReceiver(this);
         IntentFilter connectionActionFilters = new IntentFilter();
         connectionActionFilters.addAction(ConnectionStatusReceiver.ACTIONS.CONNECTED);

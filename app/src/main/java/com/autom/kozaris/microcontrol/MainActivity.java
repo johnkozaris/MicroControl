@@ -176,9 +176,9 @@ public class MainActivity extends AppCompatActivity implements MqttClientService
     }
     //region LISTENERS FOR MQTT EVENTS
 
-    /* Η μέθοδος onModuleCreateNew καλείτε οταν ενα εισερχόμενο μύνημα MQTT  στο Service "ΜicroMqttServie"
-    αναγνωριστεί ως μύνημα για την δημιουργία νέας συσκευής
-     */
+    /** Η μέθοδος onModuleCreateNew καλείτε οταν ενα εισερχόμενο μύνημα MQTT  στο Service "ΜicroMqttServie"
+     * αναγνωριστεί ως μύνημα για την δημιουργία νέας συσκευής
+     * */
     @Override
     public void onModuleCreateNew(MicroModule newModule) {
         switch (newModule.getModuleType()){
@@ -206,8 +206,8 @@ public class MainActivity extends AppCompatActivity implements MqttClientService
         }
     }
 
-    /* Η μέθοδος SubscribeBroadcast δέχεται ενα θέμα σε μορφή String
-     και αναλαμβάνει να το προωθήσει μέσω ενός Intent  στο MicroMqttService
+    /** Η μέθοδος SubscribeBroadcast δέχεται ενα θέμα σε μορφή String
+     *και αναλαμβάνει να το προωθήσει μέσω ενός Intent  στο MicroMqttService
      */
     private void SubscribeBroadcast(String Topic)
     {
@@ -217,8 +217,8 @@ public class MainActivity extends AppCompatActivity implements MqttClientService
         sendBroadcast(subscribe);
     }
 
-    /* Η μέθοδος onModuleOutputData καλείτε οταν ενα εισερχόμενο μύνημα MQTT  στο Service "ΜicroMqttServie"
-   αναγνωριστεί ως μύνημα δεδομένων μιας υπάρχουσας συσκευής.
+    /** Η μέθοδος onModuleOutputData καλείτε οταν ενα εισερχόμενο μύνημα MQTT  στο Service "ΜicroMqttServie"
+     *αναγνωριστεί ως μύνημα δεδομένων μιας υπάρχουσας συσκευής.
     */
     @Override
     public void onModuleOutputData(int moduleId, String data) {
@@ -230,10 +230,11 @@ public class MainActivity extends AppCompatActivity implements MqttClientService
         outputsfragment.recyclerAdapter.notifyDataSetChanged();
     }
 
-    /* Η μέθοδος onModuleDisconected καλείτε οταν ενα εισερχόμενο μύνημα MQTT  στο Service "ΜicroMqttServie"
-       αναγνωριστεί ως αποσύνδεσης μιας συσκευής απο τον μεσίτη.Αναλαμβάνει να διαγράψει τις συσκευές
-       απο την κατάλληλη λίστα InputModuleList η OutputModuleList
-        */
+    /**
+     *  Η μέθοδος onModuleDisconected καλείτε οταν ενα εισερχόμενο μύνημα MQTT  στο Service "ΜicroMqttServie"
+     * αναγνωριστεί ως αποσύνδεσης μιας συσκευής απο τον μεσίτη.Αναλαμβάνει να διαγράψει τις συσκευές
+     * απο την κατάλληλη λίστα InputModuleList η OutputModuleList
+     */
     @Override
     public void onModuleDisconected(int moduleId, String Type) {
         MicroModule deletedModule;
@@ -253,9 +254,10 @@ public class MainActivity extends AppCompatActivity implements MqttClientService
 
     }
 
-    /* Η μέθοδος FindModulebyId δέχετε ενα αναγνωριστικό συσκυεής "id" και μία λίστα
-     συσκευών "list" και αναλαμβάνει την εύρεση της συγκεκριμένης συσκευής απο την λίστα
-       */
+    /**
+     *  Η μέθοδος FindModulebyId δέχετε ενα αναγνωριστικό συσκυεής "id" και μία λίστα
+     *συσκευών "list" και αναλαμβάνει την εύρεση της συγκεκριμένης συσκευής απο την λίστα
+     */
     public MicroModule FindModulebyId(int id, List<MicroModule> list) {
         for (MicroModule e : list) {
             if (e.getModuleID() == id) {
@@ -266,7 +268,12 @@ public class MainActivity extends AppCompatActivity implements MqttClientService
     }
 
 
-
+    /**
+     * SectionsPagerAdapter
+     * Εσωτερική κλαση της δραστηριότητας {@link MainActivity} που αναλαμβάνει την αρχικοποίηση των καρτέλων ειδοσου και εξόδου
+     * Συνδεέι τις 2 αυτες καρτέλες με τα παράθυρα {@link InputsFragment} και {@link OutputsFragment}
+     * Δίνει επικεφαλίδες στις καρτέλες
+     */
     private  class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         SectionsPagerAdapter(FragmentManager fm) {
@@ -288,6 +295,7 @@ public class MainActivity extends AppCompatActivity implements MqttClientService
         public int getCount() {
             return 2;
         }
+
 
         @Override
         public CharSequence getPageTitle(int position) {
