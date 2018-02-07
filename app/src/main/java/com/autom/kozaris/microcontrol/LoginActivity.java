@@ -25,59 +25,61 @@ import static com.autom.kozaris.microcontrol.ConstantStrings.SETTINGS._ACTIVITY;
 
 /**
  * Login Activity
- *
- * Η πρώτη Δραστηριότητα της εφαρμογής.Παρουσιάζει το λογότυπο και δίνει 2 επιλογές στον χρήστη.
- * 1.Συνδεση σε εναν μεσίτη και έναρξη της υπηρεσίας {@link MicroMqttService}
- * 2. Αναζήτηση ενος Esp8266 WiFi Access Point
+ * <p>
+ * Η πρώτη Δραστηριότητα της εφαρμογής. Παρουσιάζει το λογότυπο και δίνει 2 επιλογές στον χρήστη.
+ * 1.Συνδεση σε έναν μεσίτη και έναρξη της υπηρεσίας {@link MicroMqttService}
+ * 2. Αναζήτηση ενός Esp8266 WiFi Access Point
  */
-public class LoginActivity extends AppCompatActivity implements ConnectionStatusReceiver.MqttConnectionListener,ConnectionDetailsFragment.OnSettingsCompletedListener {
+public class LoginActivity extends AppCompatActivity implements ConnectionStatusReceiver.MqttConnectionListener, ConnectionDetailsFragment.OnSettingsCompletedListener {
 
     private ProgressBar mProgressView;
     private View mLoginFormView;
     ConnectionStatusReceiver mConnectionReceiver;
 
     /**
-     * H μέθοδος αυτή καλείτε απο το {@link ConnectionDetailsFragment} οταν  συμπληρωθεί επιτυχώς
-     * η φόρμα με τα στοιχεία του μεσίτη. Εδω γίνεται έναρξη της υπηρεσιας {@link MicroMqttService}
-     * @param brokerAddress Η διευθυνση του μεσίτη στον οποιο θα γίνει σύνεση
+     * H μέθοδος αυτή καλείτε από το {@link ConnectionDetailsFragment} οταν  συμπληρωθεί επιτυχώς
+     * η φόρμα με τα στοιχεία του μεσίτη. Εδώ γίνεται έναρξη της υπηρεσίας {@link MicroMqttService}
+     *
+     * @param brokerAddress Η διεύθυνση του μεσίτη στον οποίο θα γίνει σύνεση
      */
     @Override
     public void onSettingsCompleted(String brokerAddress) {
-        if (brokerAddress!=null && !brokerAddress.isEmpty()){
-            Toast.makeText(this,"Connecting to: "+brokerAddress,Toast.LENGTH_SHORT).show();
-        }else {
-            Toast.makeText(this,"Connecting to: Default Address",Toast.LENGTH_SHORT).show();
+        if (brokerAddress != null && !brokerAddress.isEmpty()) {
+            Toast.makeText(this, "Connecting to: " + brokerAddress, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Connecting to: Default Address", Toast.LENGTH_SHORT).show();
         }
-        //Η υπηρεσία ξεκινάει σε ένα καινούργιο thread για να μήν παγώσει το UI και εξαρτάται απο το ApplicationContext
+        //Η υπηρεσία ξεκινάει σε ένα καινούργιο thread για να μην παγώσει το UI και εξαρτάται από το ApplicationContext
         new Thread() {
             public void run() {
-                startService(new Intent(getApplicationContext(),MicroMqttService.class));
+                startService(new Intent(getApplicationContext(), MicroMqttService.class));
                 showProgress(true);
             }
         }.start();
     }
 
     /**
-     * H μέθοδος αυτή καλέιτε απο την κλάση {@link ConnectionStatusReceiver} οταν η υπηρεσια
-     * MicroMqttService την ειδοποιήσει οτι η σύνδεση στον μεσίτη είναι επιτυχής.
-     * Σε αυτήν την μέθοδο γίνεται η έναρξη της κεντρικής δραστηριότητας ελεγχου
+     * H μέθοδος αυτή καλείται από την κλάση {@link ConnectionStatusReceiver} οταν η υπηρεσια
+     * MicroMqttService την ειδοποιήσει ότι η σύνδεση στον μεσίτη είναι επιτυχής.
+     * Σε αυτήν την μέθοδο γίνεται η έναρξη της κεντρικής δραστηριότητας ελέγχου
      * μικροελεγκτών {@link MainActivity}
      */
     @Override
     public void onConnectSuccess() {
         //Εναρξη δραστηριότητας MainActivity
-        startActivity(new Intent(this,MainActivity.class));
-        Toast.makeText(this,"Connected to Broker",Toast.LENGTH_LONG).show();
+        startActivity(new Intent(this, MainActivity.class));
+        Toast.makeText(this, "Connected to Broker", Toast.LENGTH_LONG).show();
         showProgress(false);
     }
+
     /**
-     * H μέθοδος αυτή καλέιτε απο την κλάση {@link ConnectionStatusReceiver} οταν η υπηρεσια
-     * MicroMqttService την ειδοποιήσει οτι η σύνδεση στον μεσίτη απέτυχε.
+     * H μέθοδος αυτή καλείται από την κλάση {@link ConnectionStatusReceiver} όταν η υπηρεσία
+     * MicroMqttService την ειδοποιήσει ότι η σύνδεση στον μεσίτη απέτυχε.
      */
     @Override
     public void onConnectFail() {
-        stopService(new Intent(getApplicationContext(),MicroMqttService.class));
-        Toast.makeText(this,"Failed To Connect to Broker",Toast.LENGTH_LONG).show();
+        stopService(new Intent(getApplicationContext(), MicroMqttService.class));
+        Toast.makeText(this, "Failed To Connect to Broker", Toast.LENGTH_LONG).show();
         showProgress(false);
     }
 
@@ -87,39 +89,39 @@ public class LoginActivity extends AppCompatActivity implements ConnectionStatus
     }
 
     /**
-     * H πρώτη μέθοδος η οποία θα καλεστεί κατα το άνοιγμα της εφαρμογής
+     * H πρώτη μέθοδος η οποία θα καλεστεί κατά το άνοιγμα της εφαρμογής
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        // Η εφαρμογή δουλέυει μονο σε προσανατολισμο πορτρέτου
+        // Η εφαρμογή δουλεύει μονο σε προσανατολισμό πορτρέτου
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        mProgressView=findViewById(R.id.login_progress);
-        mLoginFormView=findViewById(R.id.login_form);
-        Button ButtonConnect =findViewById(R.id.email_sign_in_button);
+        mProgressView = findViewById(R.id.login_progress);
+        mLoginFormView = findViewById(R.id.login_form);
+        Button ButtonConnect = findViewById(R.id.email_sign_in_button);
         RegisterReceivers();
-        Button configureButton =findViewById(R.id.button_Setup_Esp);
-        // Αποθηκευται στην μνημη ρυθμισεων η κατάσταση της δραστηριοτητας (Δραστηριοτητα εκτελείται)
+        Button configureButton = findViewById(R.id.button_Setup_Esp);
+        // Αποθηκεύεται στην μνήμη ρυθμίσεων η κατάσταση της δραστηριότητας (Δραστηριότητα εκτελείται)
         SharedPreferences sp = getSharedPreferences(ConstantStrings.SETTINGS._ACTIVITY, MODE_PRIVATE);
         SharedPreferences.Editor ed = sp.edit();
         ed.putBoolean(ConstantStrings.SETTINGS._QUERY_ACTIVE, false);
         ed.apply();
-        //Οταν πατηθέι το πλήκτρο σύνδεσης τερματίζετε η υπήρεσία MicroMqttService αν τρέχει και στην
+        //Όταν πατηθεί το πλήκτρο σύνδεσης τερματίζετε η υπηρεσία MicroMqttService αν τρέχει και στην
         //συνέχει εκτελείτε το παράθυρο διαλόγου settingsFragment για να γίνει καταχώρηση των
         //παραμέτρων σύνδεσης του μεσίτη.
         ButtonConnect.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                stopService(new Intent(getApplicationContext(),MicroMqttService.class));
-                DialogFragment settingsFragment= ConnectionDetailsFragment.newInstance();
-                settingsFragment.show(getSupportFragmentManager(),"settings");
-                }
+                stopService(new Intent(getApplicationContext(), MicroMqttService.class));
+                DialogFragment settingsFragment = ConnectionDetailsFragment.newInstance();
+                settingsFragment.show(getSupportFragmentManager(), "settings");
+            }
 
         });
-        //Οταν πατηθεί το πλήκτρο ρυθμιση συσκευών θα ξεκινήσει η δραστηριότητα EspSetupActivity
-        // που σκοπο εχει την ρυθμιση των συσκευων Esp που βρίσκονται εντος εμβέλειας WiFi
+        //Όταν πατηθεί το πλήκτρο ρύθμιση συσκευών θα ξεκινήσει η δραστηριότητα EspSetupActivity
+        // που σκοπό εχει την ρύθμιση των συσκευών Esp που βρίσκονται εντός εμβέλειας WiFi
         configureButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,9 +133,8 @@ public class LoginActivity extends AppCompatActivity implements ConnectionStatus
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (hasFocus)
-        {
-            NotificationManager nm =(NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        if (hasFocus) {
+            NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             assert nm != null;
             nm.cancel(2);
         }
@@ -178,7 +179,7 @@ public class LoginActivity extends AppCompatActivity implements ConnectionStatus
 
     /**
      * Εγγραφή στις ενέργειες του Broadcast Receiver {@link ConnectionStatusReceiver}
-     * για να λειτουργησει η μέθοδος Callback {nConnectSuccess} και onConnectFail
+     * για να λειτουργήσει η μέθοδος Callback {nConnectSuccess} και onConnectFail
      */
     private void RegisterReceivers() {
         SharedPreferences sp = getSharedPreferences(_ACTIVITY, MODE_PRIVATE);
@@ -191,8 +192,4 @@ public class LoginActivity extends AppCompatActivity implements ConnectionStatus
         connectionActionFilters.addAction(ConnectionStatusReceiver.ACTIONS.FAILED_TO_CONNECT);
         registerReceiver(mConnectionReceiver, new IntentFilter(connectionActionFilters));
     }
-
-
 }
-
-

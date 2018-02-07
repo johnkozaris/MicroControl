@@ -16,15 +16,16 @@ import com.autom.kozaris.microcontrol.R;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * {@link Fragment} InputsFragment
- *
+ * <p>
  * Καρτέλα που περιέχει τις συσκευές που είναι δηλωμένες ως Είσοδοι
  * Καλέιτε μόνο απο την δραστηριότητα MainActivity
  *
- *@author   Ioannis Kozaris
+ * @author Ioannis Kozaris
  */
-public class InputsFragment extends Fragment{
+public class InputsFragment extends Fragment {
     public List<MicroModule> InputModuleList;
     public ModulesAdapter recyclerAdapter;
     ViewGroup mcontainer;
@@ -33,12 +34,11 @@ public class InputsFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Αν καλέστηκε απο την δραστηριότητα MainActivity
-        if (getActivity() instanceof MainActivity)
-        {
+        if (getActivity() instanceof MainActivity) {
             //Τοτε δημιούργησε μια δημόσια λίστα InputModuleList στην οποία θα καταχωρούνται οι
             //συσκευές εισόδου απο την δραστηριότητα MainActivity.
-            InputModuleList=new ArrayList<>();
-             recyclerAdapter = new ModulesAdapter(getActivity(), InputModuleList);
+            InputModuleList = new ArrayList<>();
+            recyclerAdapter = new ModulesAdapter(getActivity(), InputModuleList);
         }
     }
 
@@ -46,9 +46,9 @@ public class InputsFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        mcontainer=container;
+        mcontainer = container;
         View view = inflater.inflate(R.layout.fragment_main, mcontainer, false);
-        RecyclerView recyclelist =view.findViewById(R.id.cardList);
+        RecyclerView recyclelist = view.findViewById(R.id.cardList);
         recyclelist.setHasFixedSize(true);
         LinearLayoutManager llmanager = new LinearLayoutManager(getActivity());
         llmanager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -61,7 +61,10 @@ public class InputsFragment extends Fragment{
     }
 
     @Override
-    public void onAttach(Context context) {super.onAttach(context);}
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
     @Override
     public void onDetach() {
         super.onDetach();

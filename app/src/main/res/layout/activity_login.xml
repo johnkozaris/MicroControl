@@ -18,12 +18,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="casual"
-        android:gravity="left"
+        android:gravity="start"
         android:paddingTop="0dp"
         android:text=" Κόζαρης Ιωάννης"
-        android:textAlignment="viewStart"
         android:textColor="@android:color/background_light"
-        android:textSize="10sp"
+        android:textSize="12sp"
         android:textStyle="italic"
         tools:text=" Κόζαρης Ιωάννης" />
 

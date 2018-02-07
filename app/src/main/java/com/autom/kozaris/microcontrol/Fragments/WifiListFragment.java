@@ -28,12 +28,13 @@ import com.autom.kozaris.microcontrol.R;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * {@link Fragment} WifiListFragment
- *
+ * <p>
  * Διάλογος που προβάλει τα κοντινα δίκτυα Wi-Fi των μικροελεγκτών ESP
  * που είναι διαθέσιμα.
- *
+ * <p>
  * Activities που περιέχουν αυτο το Fragment πρέπει να υλοποιούν
  * {@link OnWifiSelectedListener} interface
  * για να διαχειριζονται τα γεγονότα.
@@ -41,7 +42,7 @@ import java.util.List;
 public class WifiListFragment extends DialogFragment {
 
     private OnWifiSelectedListener mListener;
-    private static final int PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION=5;
+    private static final int PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION = 5;
     ListView list;
     WifiManager wifi;
     String wifis[];
@@ -50,18 +51,22 @@ public class WifiListFragment extends DialogFragment {
     ArrayAdapter<String> arrayAdapter;
     ProgressBar scanBar;
 
-    public static WifiListFragment newInstance() { return new WifiListFragment();}
-    public WifiListFragment() {}
+    public static WifiListFragment newInstance() {
+        return new WifiListFragment();
+    }
+
+    public WifiListFragment() {
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        arrayList= new ArrayList<>();
+        arrayList = new ArrayList<>();
         //Αρχικοποίηση της υπηρεσίας WiFi της συσκευής
         wifiReceiver = new WifiScanReceiver();
         wifi = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         //Καταχώρηση φίλτρου για να λειφθούν απο την κλάση WifiScanReceiver τα διαθέσιμα δικτυα WiFi
-        getActivity().registerReceiver(wifiReceiver,new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        getActivity().registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 
     }
 
@@ -81,11 +86,11 @@ public class WifiListFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view =inflater.inflate(R.layout.fragment_wifi_list, container, false);
-        list =view.findViewById(R.id.listview_esp_wifi);
+        View view = inflater.inflate(R.layout.fragment_wifi_list, container, false);
+        list = view.findViewById(R.id.listview_esp_wifi);
         scanBar = view.findViewById(R.id.progressBarScanWifi);
         scanBar.setVisibility(View.VISIBLE);
-        arrayAdapter = new ArrayAdapter<>(getActivity(),android.R.layout.simple_list_item_1,arrayList);
+        arrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, arrayList);
         list.setAdapter(arrayAdapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -95,14 +100,14 @@ public class WifiListFragment extends DialogFragment {
             }
         });
         //Ενεργοποίηση το WiFi αν δεν είναι ενεργό
-        if (!wifi.isWifiEnabled()){
+        if (!wifi.isWifiEnabled()) {
             wifi.setWifiEnabled(true);
         }
         //Για καινούργια λογισμικά android κάνε αίτηση μιας άδειας απο τον χρήστη, για την χρήση του wifi
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && getActivity().checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && getActivity().checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                     PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION);
-        }else{
+        } else {
             //Εναρξη αναζήτησης δικτύων
             showProgress(true);
             wifi.startScan();
@@ -137,29 +142,30 @@ public class WifiListFragment extends DialogFragment {
 
     /**
      * Εφέ αναζήτηση δικτύου
+     *
      * @param show εντολη ενεργοποίησης απενεργοποίησης εφε
      */
     private void showProgress(final boolean show) {
 
 
-                int shortAnimTime = 300;
+        int shortAnimTime = 300;
+        list.setVisibility(show ? View.GONE : View.VISIBLE);
+        list.animate().setDuration(shortAnimTime).alpha(
+                show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
                 list.setVisibility(show ? View.GONE : View.VISIBLE);
-                list.animate().setDuration(shortAnimTime).alpha(
-                        show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        list.setVisibility(show ? View.GONE : View.VISIBLE);
-                    }
-                });
+            }
+        });
 
+        scanBar.setVisibility(show ? View.VISIBLE : View.GONE);
+        scanBar.animate().setDuration(shortAnimTime).alpha(
+                show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
                 scanBar.setVisibility(show ? View.VISIBLE : View.GONE);
-                scanBar.animate().setDuration(shortAnimTime).alpha(
-                        show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        scanBar.setVisibility(show ? View.VISIBLE : View.GONE);
-                    }
-                });
+            }
+        });
 
     }
 
@@ -174,9 +180,9 @@ public class WifiListFragment extends DialogFragment {
             arrayList.clear();
             arrayAdapter.clear();
             //Βάλε στην λίστα μόνο τα δίκτυα Wifi που περιέχουν την λέξη esp
-            for (int i = 0; i < wifiScanList.size()-1; i++) {
+            for (int i = 0; i < wifiScanList.size() - 1; i++) {
                 wifis[i] = wifiScanList.get(i).SSID;
-                if (wifiScanList.get(i).SSID.contains("ESP")||wifiScanList.get(i).SSID.contains("esp")||wifiScanList.get(i).SSID.contains("Esp")) {
+                if (wifiScanList.get(i).SSID.contains("ESP") || wifiScanList.get(i).SSID.contains("esp") || wifiScanList.get(i).SSID.contains("Esp")) {
                     arrayAdapter.add(wifis[i]);
                 }
             }

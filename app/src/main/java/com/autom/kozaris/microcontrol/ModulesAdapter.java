@@ -16,12 +16,14 @@ import android.view.ViewGroup;
 import com.autom.kozaris.microcontrol.Fragments.MotorController;
 
 import java.util.List;
+
 /**
  * ModulesAdapter
- *
+ * <p>
  * Ο Adapter αυτος ελέλγχει την λίστα  συσκευών που εμφανίζεται στην οθόνη
  * του χρήστη.Ελέγχει επίσης τις καρτέλες συσκευών και ολα τα αντικείμενα που υπάρχουν μέσα σε αυτές
  * Αρχικοποίηση μέσω: {@link #ModulesAdapter(Context, List)}
+ *
  * @author Ioannis Kozaris
  */
 public class ModulesAdapter extends RecyclerView.Adapter<ModulesViewHolder> {
@@ -33,23 +35,24 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesViewHolder> {
      * Η αρχικοποίηση του Adapter γίνεται απο μια δραστηριότητα και απαιτεί
      * το Context της δραστηριότητας που θα δείξει την λίστα καθώς και
      * την λίστα των αντικειμένων που θα παρουσιαστεί
-     * @param context Activity Context
+     *
+     * @param context    Activity Context
      * @param moduleList Λίστα συσκευών
      */
     public ModulesAdapter(Context context, List<MicroModule> moduleList) {
         this.AdapterModulelist = moduleList;
-        mContext=context;
+        mContext = context;
     }
 
     /**
      * Δημιουργόυμε εναν ViewHolder μεσα απο τον οποιο θα αναφερόμαστε στα αντικειμενα UI της εφαρμογής
-     *ο ViewHolder {@link ModulesViewHolder} είναι μια κλάση που αρχικοποιει τα αντικείμενα που υπάρχουν στο UI
+     * ο ViewHolder {@link ModulesViewHolder} είναι μια κλάση που αρχικοποιει τα αντικείμενα που υπάρχουν στο UI
      * και δημιουργει ενα αντικείμενο Java για κάθε στοιχειο του UI
      */
     @Override
     public ModulesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemview = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview, parent, false);
-        return new ModulesViewHolder(itemview,mContext);
+        return new ModulesViewHolder(itemview, mContext);
     }
 
     /**
@@ -65,12 +68,11 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesViewHolder> {
         //Αλλαξε τον τίτλο της καρτέλας αναλογα με το ID της συσκευής
         holder.vId.setText(mContext.getString(R.string.cardview_title_id_prop, mmd.getModuleID()));
         //Ρύθμιση το στρογγυλου κουμπιού της καρτέλας
-        ConfigureFab(holder,mmd);
+        ConfigureFab(holder, mmd);
         //Ελεγχος υπαρξης μεταβλητής Ονόματος Συσκευής
         if (mmd.getName() != null) {
             holder.vName.setText(mmd.getName());
-        }
-        else{
+        } else {
             holder.vName.setText("Αγνωστο");
         }
         //Εμφάνησε τα κατάλληλα εργαλεία ελεγχου ανάλογα με τον τύπο της συσκευής
@@ -84,7 +86,7 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesViewHolder> {
                 holder.vSwitch1.setClickable(true);
                 break;
             //Αν η σκυσκεή είναι κινητήρας τότε εμφάνησε κουμπί  την καρτέλα
-                case MOTOR_CONRTOL:
+            case MOTOR_CONRTOL:
                 holder.vControlMotorBtn.setVisibility(View.VISIBLE);
                 holder.vControlMotorBtn.setEnabled(true);
                 /*Οταν πατηθέί το κουμπί τότε εμφάνησε εναν διάλογο ελεγχου του κινητηρα
@@ -155,9 +157,14 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesViewHolder> {
                         //Ελεγχος κειμένου πριν την αποστολή
                         //απογορευτε η χρήση κενου μηνλυματος καθως και των χαρακτήρων "\" και "&" καθώς επηρεάζει
                         //την δομή των μυνημάτων MQTT
-                        if ( holder.lcdEditText.getText()== null || holder.lcdEditText.getText().toString().isEmpty()){return;}
-                        String lcdPayload= holder.lcdEditText.getText().toString();
-                        if (lcdPayload.contains("\"") || lcdPayload.contains("\\")){ holder.lcdEditText.setError("Cannot contain special characters"); return;}
+                        if (holder.lcdEditText.getText() == null || holder.lcdEditText.getText().toString().isEmpty()) {
+                            return;
+                        }
+                        String lcdPayload = holder.lcdEditText.getText().toString();
+                        if (lcdPayload.contains("\"") || lcdPayload.contains("\\")) {
+                            holder.lcdEditText.setError("Cannot contain special characters");
+                            return;
+                        }
                         Intent send = new Intent();
                         send.setAction(ConstantStrings.ACTIONS._PUBLISH);
                         send.putExtra(ConstantStrings.EXTRAS._PUB_PAYLOAD, lcdPayload);
@@ -177,7 +184,7 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesViewHolder> {
         return AdapterModulelist.size();
     }
 
-    private void EnableOutputControls(ModulesViewHolder mholder){
+    private void EnableOutputControls(ModulesViewHolder mholder) {
         mholder.vTextLabelData.setVisibility(View.VISIBLE);
         mholder.vTextLabelData.setEnabled(true);
         mholder.vTextData.setEnabled(true);
@@ -187,10 +194,10 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesViewHolder> {
     }
 
     /**
-     *Ρύθμισή των γεγονότων πατήματος, του κουμπιού ρυθμίσεων κάθε καρτέλας
+     * Ρύθμισή των γεγονότων πατήματος, του κουμπιού ρυθμίσεων κάθε καρτέλας
      * Οταν πατηθεί αυτό το κουμπί η συσκεύή θα κάνει επανεκίνηση και θα μπεί σε λειτουργία ρύθμισης
      */
-    private void ConfigureFab(ModulesViewHolder mholder,final MicroModule module){
+    private void ConfigureFab(ModulesViewHolder mholder, final MicroModule module) {
         if (mholder.fabSettings != null) {
             mholder.fabSettings.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -210,7 +217,7 @@ public class ModulesAdapter extends RecyclerView.Adapter<ModulesViewHolder> {
                                     send.putExtra(ConstantStrings.EXTRAS._PUB_PAYLOAD, MicroModule.IConstants.Payloads.COMMAND_RESET_ROM);
                                     send.putExtra(ConstantStrings.EXTRAS._PUB_TOPIC, module.getSettingsTopic());
                                     (mContext).sendBroadcast(send);
-                                    switch (module.getModuleType()){
+                                    switch (module.getModuleType()) {
                                         case INPUT:
                                             ((MainActivity) mContext).inputsFragment.InputModuleList.remove(module);
                                             break;

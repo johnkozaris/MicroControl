@@ -19,13 +19,13 @@ import java.util.List;
 
 /**
  * {@link Fragment} OutputsFragment
- *
+ * <p>
  * Καρτέλα που περιέχει τις συσκευές που είναι δηλωμένες ως Εξοδοι
  * Καλέιτε μόνο απο την δραστηριότητα MainActivity
  *
- *@author   Ioannis Kozaris
+ * @author Ioannis Kozaris
  */
-public class OutputsFragment extends Fragment{
+public class OutputsFragment extends Fragment {
     public List<MicroModule> OutputModuleList;
     public ModulesAdapter recyclerAdapter;
     ViewGroup mcontainer;
@@ -45,9 +45,9 @@ public class OutputsFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mcontainer=container;
+        mcontainer = container;
         View view = inflater.inflate(R.layout.fragment_main, mcontainer, false);
-        RecyclerView recyclelist =view.findViewById(R.id.cardList);
+        RecyclerView recyclelist = view.findViewById(R.id.cardList);
         recyclelist.setHasFixedSize(true);
         LinearLayoutManager llmanager = new LinearLayoutManager(getActivity());
         llmanager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -58,13 +58,14 @@ public class OutputsFragment extends Fragment{
     }
 
     @Override
-    public void onAttach(Context context) {super.onAttach(context);}
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
 
     @Override
     public void onDetach() {
         super.onDetach();
     }
-
 
 
 }

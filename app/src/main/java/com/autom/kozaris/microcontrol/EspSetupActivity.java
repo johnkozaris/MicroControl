@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
+
 import com.autom.kozaris.microcontrol.Fragments.WifiListFragment;
 
 import java.util.List;
@@ -29,11 +30,11 @@ import java.util.List;
  * Αναζητά διαθέσιμους μικροελγκτές Esp8266 εντός εμβέλειας Wifi της συσκευής.
  * Συνδέετε μαζί τους και πλοηγήτε στην κατάλληλη διευθυνση Ip  οπου μπορει να γίνει αλλαγή ρυθμίσεων των συσκευων Esp8266
  */
-public class EspSetupActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,WifiListFragment.OnWifiSelectedListener{
+public class EspSetupActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, WifiListFragment.OnWifiSelectedListener {
 
     WebView mWebView;
     //Διευθυνση που προβάλεται απο τους Esp8266 η Ιστοσελίδα με HTML-Javascript
-    String WebServerIPAddress= "192.168.4.22";
+    String WebServerIPAddress = "192.168.4.22";
     Spinner spinnerHtml;
     ArrayAdapter<CharSequence> spinAdapter;
     ConnectivityManager cm;
@@ -45,8 +46,8 @@ public class EspSetupActivity extends AppCompatActivity implements AdapterView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.browser_view);
         //Αρχικοποίηση ενος Browser που θα πλοηγηθεί στις σελίδες του Esp8266
-        mWebView=findViewById(R.id.EspBrowser);
-        spinnerHtml=findViewById(R.id.spinnerEspHTMLS);
+        mWebView = findViewById(R.id.EspBrowser);
+        spinnerHtml = findViewById(R.id.spinnerEspHTMLS);
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         mWebView.getSettings().setLoadsImagesAutomatically(true);
@@ -56,7 +57,7 @@ public class EspSetupActivity extends AppCompatActivity implements AdapterView.O
         spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerHtml.setAdapter(spinAdapter);
         spinnerHtml.setOnItemSelectedListener(this);
-        ImageButton buttonRefresh =findViewById(R.id.imageButton_manual_html_values);
+        ImageButton buttonRefresh = findViewById(R.id.imageButton_manual_html_values);
         wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
         buttonRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,24 +66,24 @@ public class EspSetupActivity extends AppCompatActivity implements AdapterView.O
             }
         });
         // Πλήκτρο πίσω πλοήγησης Browser
-        ImageButton buttonBack =findViewById(R.id.imageButtonBack);
+        ImageButton buttonBack = findViewById(R.id.imageButtonBack);
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mWebView.canGoBack()){
+                if (mWebView.canGoBack()) {
                     mWebView.goBack();
                 }
             }
         });
         //Πλήκτρο εμφάνησης διαθέσιμων μικροελεγκτών Esp8266
-        ImageButton buttonNetworkList =findViewById(R.id.imageButtonWifi);
+        ImageButton buttonNetworkList = findViewById(R.id.imageButtonWifi);
         buttonNetworkList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 wifiManager.disconnect();
                 //Εκτέλεσε το παράθυρο  WifiListFragment που θα αναλάβει την αναζήτηση μικροελεγκτών
-                DialogFragment wifiListFragment= WifiListFragment.newInstance();
-                wifiListFragment.show(getSupportFragmentManager(),"wifiscan");
+                DialogFragment wifiListFragment = WifiListFragment.newInstance();
+                wifiListFragment.show(getSupportFragmentManager(), "wifiscan");
             }
         });
     }
@@ -97,7 +98,7 @@ public class EspSetupActivity extends AppCompatActivity implements AdapterView.O
         super.onStart();
         mWebView.setWebChromeClient(new WebChromeClient());
         mWebView.setWebViewClient(new WebViewClient());
-         cm = (ConnectivityManager)this.getSystemService(CONNECTIVITY_SERVICE);
+        cm = (ConnectivityManager) this.getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo wifiNetwork = cm != null ? cm.getActiveNetworkInfo() : null;
         //Αν το WiFi ειναι συνδεδεμένο σε ένα δίκτυο
         if (wifiNetwork != null && wifiNetwork.isConnected()) {
@@ -106,15 +107,15 @@ public class EspSetupActivity extends AppCompatActivity implements AdapterView.O
             //Και αν το δίκτυο περίέχει στο όνομα του την λέξη ESP
             if (ssid.contains("ESP")) {
                 //Τοτε θα πλοηγηθεί στης διευθυνση WebServerIPAddress
-                mWebView.loadUrl("http://"+WebServerIPAddress);
+                mWebView.loadUrl("http://" + WebServerIPAddress);
                 spinnerHtml.setSelection(spinAdapter.getPosition("Main Page"));
             } else {
                 //Αλλιως βρισκομαστε σε λάθος δίκτυο και θα γίνει αποσύνδεση και θα ξεκινήσει
                 //το παράθυρο διαλόγο WifiListManager για να γίνει η ανιχνευση σωστού δικτύου
-                Toast.makeText(this,"Choose an ESP network",Toast.LENGTH_LONG).show();
-                DialogFragment wifiListFragment= WifiListFragment.newInstance();
+                Toast.makeText(this, "Choose an ESP network", Toast.LENGTH_LONG).show();
+                DialogFragment wifiListFragment = WifiListFragment.newInstance();
                 wifiManager.disconnect();
-                wifiListFragment.show(getSupportFragmentManager(),"wifiscan");
+                wifiListFragment.show(getSupportFragmentManager(), "wifiscan");
             }
         }
     }
@@ -123,22 +124,23 @@ public class EspSetupActivity extends AppCompatActivity implements AdapterView.O
      * Μέθοδος Callback που καλέιτε απο την κλάση {@link WifiListFragment} οταν επιλεχθεί ενα
      * δίκτυο WiFi ενος Esp8266.
      * Εδώ γίνεται η σύνδεση της συσκευής στο δίκτυο του Esp8266
+     *
      * @param ssid Ονομα SSID του Esp8266 που επιλέχθηκε
      */
     @Override
     public void onWifiSelected(String ssid) {
         //Ελεγχος του ονοματος ssid που επιλέχθηκε
         WifiConfiguration wifiConf = new WifiConfiguration();
-        wifiConf.SSID="\"" + ssid + "\"";
+        wifiConf.SSID = "\"" + ssid + "\"";
         //Δεν υπάρχει κωδικός δικτυου τα δικτυα Esp8266 είναι ανοιχτά
         wifiConf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-        WifiManager wifiManager = (WifiManager)getApplicationContext().getSystemService(WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
         assert wifiManager != null;
         wifiManager.addNetwork(wifiConf);
         List<WifiConfiguration> list = wifiManager.getConfiguredNetworks();
         //Βρες το δίκτυο που επιλέξε ο χρήστης στην λίστα διαθεσιμων δικτύων και συνδεσου σε αυτο μολις βρεθεί
-        for( WifiConfiguration i : list ) {
-            if(i.SSID != null && i.SSID.equals("\"" + ssid + "\"")) {
+        for (WifiConfiguration i : list) {
+            if (i.SSID != null && i.SSID.equals("\"" + ssid + "\"")) {
                 wifiManager.disconnect();
                 wifiManager.enableNetwork(i.networkId, true);
                 wifiManager.reconnect();
@@ -152,22 +154,22 @@ public class EspSetupActivity extends AppCompatActivity implements AdapterView.O
      */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            switch (parent.getItemAtPosition(position).toString())
-            {
-                case "Main Page":
-                    mWebView.loadUrl("http://"+WebServerIPAddress);
-                    break;
-                case "Options":
-                    mWebView.loadUrl("http://"+WebServerIPAddress+"/options");
-                    break;
-                case "WiFi Chooser":
-                    mWebView.loadUrl("http://"+WebServerIPAddress+"/wifi");
-                    break;
-            }
+        switch (parent.getItemAtPosition(position).toString()) {
+            case "Main Page":
+                mWebView.loadUrl("http://" + WebServerIPAddress);
+                break;
+            case "Options":
+                mWebView.loadUrl("http://" + WebServerIPAddress + "/options");
+                break;
+            case "WiFi Chooser":
+                mWebView.loadUrl("http://" + WebServerIPAddress + "/wifi");
+                break;
+        }
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent) {}
+    public void onNothingSelected(AdapterView<?> parent) {
+    }
 
     /**
      * Γίνεται ερώτηση στον χρήστη οταν πατήσει το πίσω πλήκτρο, αν θέλει πραγματικα
