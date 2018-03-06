@@ -14,3 +14,10 @@
 *	Προβολή δεδομένων από αισθητήρες, σε μορφή αριθμητικών τιμών η λογικών τιμών (ενεργός, ανενεργός) 
 ## Κώδικας Εφαργμογής ##
 Φάκελος /app/src/main/java/com/autom/kozaris/microcontrol/
+## Φωτογραφίες ##
+![alt text](https://github.com/ZanKoz/MicroControl/blob/master/Screenshots/Login-Activity-min.png) ![alt text](https://github.com/ZanKoz/MicroControl/blob/master/Screenshots/broker-selection-min.png) 
+ ![alt text](https://github.com/ZanKoz/MicroControl/blob/master/Screenshots/inputs-min.png) ![alt text](https://github.com/ZanKoz/MicroControl/blob/master/Screenshots/notification-min.png)
+ ![alt text](https://github.com/ZanKoz/MicroControl/blob/master/Screenshots/configure-Chooser-min.png) 
+  ![alt text](https://github.com/ZanKoz/MicroControl/blob/master/Screenshots/outputs-min.png) 
+   ![alt text](https://github.com/ZanKoz/MicroControl/blob/master/Screenshots/configure-main-min.png) 
+    ![alt text](https://github.com/ZanKoz/MicroControl/blob/master/Screenshots/Motor-Control-min.png) 
