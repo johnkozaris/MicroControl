@@ -7,7 +7,7 @@
 .DS_Store
 /build
 /captures
-/.idea/
+/.idea/*
 
 #built application files
 *.apk
