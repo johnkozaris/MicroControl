@@ -3,6 +3,7 @@ package com.autom.kozaris.microcontrol.Fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -52,7 +53,7 @@ public class ConnectionDetailsFragment extends DialogFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =inflater.inflate(R.layout.fragment_connection_details, container, false);
@@ -108,21 +109,31 @@ public class ConnectionDetailsFragment extends DialogFragment {
     }
 
     void CheckPreferencesForData(){
-        SharedPreferences Pref = getActivity().getSharedPreferences(ConstantStrings.STORAGE.STORAGE_KEY_CON_SETTINGS_PREF,Context.MODE_PRIVATE);
-        defAddress = Pref.getString(ConstantStrings.STORAGE.PREFERENCE_BROKER_ADDR,"");
-        defUsername = Pref.getString(ConstantStrings.STORAGE.PREFERENCE_BROKER_USERNAME,"");
-        defPassword = Pref.getString(ConstantStrings.STORAGE.PREFERENCE_BROKER_PASSWORD,"");
-        defCleanSession = Pref.getBoolean(ConstantStrings.STORAGE.PREFERENCE_BROKER_CLEANSESSION,true);
+        if(getActivity()!=null) {
+            SharedPreferences Pref = getActivity().getSharedPreferences(ConstantStrings.STORAGE.STORAGE_KEY_CON_SETTINGS_PREF, Context.MODE_PRIVATE);
+            defAddress = Pref.getString(ConstantStrings.STORAGE.PREFERENCE_BROKER_ADDR, "");
+            defUsername = Pref.getString(ConstantStrings.STORAGE.PREFERENCE_BROKER_USERNAME, "");
+            defPassword = Pref.getString(ConstantStrings.STORAGE.PREFERENCE_BROKER_PASSWORD, "");
+            defCleanSession = Pref.getBoolean(ConstantStrings.STORAGE.PREFERENCE_BROKER_CLEANSESSION, true);
+        }
     }
 
     void SavePreferences(){
-        SharedPreferences sharedPref = getActivity().getSharedPreferences(ConstantStrings.STORAGE.STORAGE_KEY_CON_SETTINGS_PREF,Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        if (!Address.isEmpty()){ editor.putString(ConstantStrings.STORAGE.PREFERENCE_BROKER_ADDR,defAddress);}
-        if (!defUsername.isEmpty()){ editor.putString(ConstantStrings.STORAGE.PREFERENCE_BROKER_USERNAME,defUsername);}
-        if (!defPassword.isEmpty()){editor.putString(ConstantStrings.STORAGE.PREFERENCE_BROKER_PASSWORD,defPassword);}
-        editor.putBoolean(ConstantStrings.STORAGE.PREFERENCE_BROKER_CLEANSESSION,true);
-        editor.apply();
+        if(getActivity()!=null) {
+            SharedPreferences sharedPref = getActivity().getSharedPreferences(ConstantStrings.STORAGE.STORAGE_KEY_CON_SETTINGS_PREF, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            if (!Address.isEmpty()) {
+                editor.putString(ConstantStrings.STORAGE.PREFERENCE_BROKER_ADDR, defAddress);
+            }
+            if (!defUsername.isEmpty()) {
+                editor.putString(ConstantStrings.STORAGE.PREFERENCE_BROKER_USERNAME, defUsername);
+            }
+            if (!defPassword.isEmpty()) {
+                editor.putString(ConstantStrings.STORAGE.PREFERENCE_BROKER_PASSWORD, defPassword);
+            }
+            editor.putBoolean(ConstantStrings.STORAGE.PREFERENCE_BROKER_CLEANSESSION, true);
+            editor.apply();
+        }
     }
 
     @Override
